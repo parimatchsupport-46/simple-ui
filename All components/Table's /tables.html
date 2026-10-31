@@ -1,0 +1,406 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Modern Data Table</title>
+
+  <style>
+    :root {
+      --bg: #f4f5f7;
+      --card: #ffffff;
+      --text: #1f2430;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --header: #f8f9fb;
+      --hover: #f7f8fa;
+      --shadow: 0 8px 30px rgba(0,0,0,0.06);
+      --accent: #4f6bed;
+      --success-bg: rgba(34,160,107,0.12);
+      --success: #22a06b;
+      --inactive-bg: rgba(107,114,128,0.12);
+      --inactive: #6b7280;
+    }
+
+    [data-theme="dark"] {
+      --bg: #12141a;
+      --card: #1c1f28;
+      --text: #eceef3;
+      --muted: #9aa1b2;
+      --border: #2a2e3a;
+      --header: #222530;
+      --hover: #252936;
+      --shadow: 0 8px 30px rgba(0,0,0,0.3);
+      --accent: #7b92ff;
+      --success-bg: rgba(34,160,107,0.16);
+      --success: #43c994;
+      --inactive-bg: rgba(154,161,178,0.12);
+      --inactive: #a6adbc;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 0 40px;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    /* Theme Toggle */
+
+    .theme-toggle {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      width: 46px;
+      height: 46px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      transition: transform 0.2s, background 0.3s;
+      z-index: 10;
+    }
+
+    .theme-toggle:hover {
+      transform: scale(1.06);
+    }
+
+    .theme-toggle svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .theme-toggle .icon-sun {
+      display: none;
+    }
+
+    [data-theme="dark"] .theme-toggle .icon-sun {
+      display: block;
+    }
+
+    [data-theme="dark"] .theme-toggle .icon-moon {
+      display: none;
+    }
+
+    /* Table Container */
+
+    .table-container {
+      width: 90%;
+      max-width: 1000px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: background 0.3s, border 0.3s;
+    }
+
+    /* Responsive Wrapper */
+
+    .table-scroll {
+      width: 100%;
+      overflow-x: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--muted) transparent;
+    }
+
+    table {
+      width: 100%;
+      min-width: 480px;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    /* Table Header */
+
+    thead {
+      background: var(--header);
+    }
+
+    th {
+      padding: 15px 20px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 650;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      white-space: nowrap;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* Table Body */
+
+    td {
+      padding: 15px 20px;
+      font-size: 0.9rem;
+      color: var(--text);
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+      transition: background 0.2s;
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    tbody tr {
+      transition: background 0.2s;
+    }
+
+    tbody tr:hover {
+      background: var(--hover);
+    }
+
+    /* Name */
+
+    .user-name {
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    /* Email */
+
+    .user-email {
+      color: var(--muted);
+    }
+
+    /* Status Badges */
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 0.76rem;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .status.active {
+      background: var(--success-bg);
+      color: var(--success);
+    }
+
+    .status.active .status-dot {
+      background: var(--success);
+    }
+
+    .status.inactive {
+      background: var(--inactive-bg);
+      color: var(--inactive);
+    }
+
+    .status.inactive .status-dot {
+      background: var(--inactive);
+    }
+
+    /* Mobile Responsive */
+
+    @media (max-width: 480px) {
+      .table-container {
+        width: 90%;
+        border-radius: 10px;
+      }
+
+      th {
+        padding: 13px 14px;
+        font-size: 0.73rem;
+      }
+
+      td {
+        padding: 14px;
+        font-size: 0.84rem;
+      }
+
+      .status {
+        padding: 5px 8px;
+        font-size: 0.72rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <!-- Theme Toggle -->
+
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+
+    <svg class="icon-moon" viewBox="0 0 24 24"
+      fill="none" stroke="currentColor" stroke-width="2"
+      stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>
+    </svg>
+
+    <svg class="icon-sun" viewBox="0 0 24 24"
+      fill="none" stroke="currentColor" stroke-width="2"
+      stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="4"/>
+      <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l-1.41 1.41M17.66 6.34l1.41-1.41"/>
+    </svg>
+
+  </button>
+
+  <!-- Data Table -->
+
+  <div class="table-container">
+
+    <div class="table-scroll">
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <tr>
+            <td>
+              <span class="user-name">John</span>
+            </td>
+            <td>
+              <span class="user-email">john@example.com</span>
+            </td>
+            <td>
+              <span class="status active">
+                <span class="status-dot"></span>
+                Active
+              </span>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              <span class="user-name">Jane</span>
+            </td>
+            <td>
+              <span class="user-email">jane@example.com</span>
+            </td>
+            <td>
+              <span class="status active">
+                <span class="status-dot"></span>
+                Active
+              </span>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              <span class="user-name">Bob</span>
+            </td>
+            <td>
+              <span class="user-email">bob@example.com</span>
+            </td>
+            <td>
+              <span class="status inactive">
+                <span class="status-dot"></span>
+                Inactive
+              </span>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              <span class="user-name">Alice</span>
+            </td>
+            <td>
+              <span class="user-email">alice@example.com</span>
+            </td>
+            <td>
+              <span class="status active">
+                <span class="status-dot"></span>
+                Active
+              </span>
+            </td>
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+  <script>
+
+    const root = document.documentElement;
+    const toggle = document.getElementById("themeToggle");
+
+    // Theme Management
+
+    function setTheme(theme) {
+      root.setAttribute("data-theme", theme);
+
+      try {
+        localStorage.setItem("theme", theme);
+      } catch (e) {}
+    }
+
+    let saved = null;
+
+    try {
+      saved = localStorage.getItem("theme");
+    } catch (e) {}
+
+    setTheme(
+      saved ||
+      (window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light")
+    );
+
+    toggle.addEventListener("click", () => {
+      setTheme(
+        root.getAttribute("data-theme") === "dark"
+          ? "light"
+          : "dark"
+      );
+    });
+
+  </script>
+
+</body>
+</html>

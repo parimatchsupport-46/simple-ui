@@ -1,0 +1,505 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alerts</title>
+
+  <style>
+    :root {
+      --bg: #f4f5f7;
+      --card: #ffffff;
+      --text: #1f2430;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+      --accent: #4f6bed;
+    }
+
+    [data-theme="dark"] {
+      --bg: #12141a;
+      --card: #1c1f28;
+      --text: #eceef3;
+      --muted: #9aa1b2;
+      --border: #2a2e3a;
+      --shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+      --accent: #7b92ff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      padding: 80px 0 40px;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    /* Theme Toggle */
+
+    .theme-toggle {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      width: 46px;
+      height: 46px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      transition: transform 0.2s, background 0.3s;
+      z-index: 10;
+    }
+
+    .theme-toggle:hover {
+      transform: scale(1.08);
+    }
+
+    .theme-toggle svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .theme-toggle .icon-sun {
+      display: none;
+    }
+
+    [data-theme="dark"] .theme-toggle .icon-sun {
+      display: block;
+    }
+
+    [data-theme="dark"] .theme-toggle .icon-moon {
+      display: none;
+    }
+
+    /* Alerts Container */
+
+    .alerts-container {
+      width: 90%;
+      max-width: none;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .alert-row {
+      width: 100%;
+      display: flex;
+      align-items: center;
+    }
+
+    .alert-row.align-left {
+      justify-content: flex-start;
+    }
+
+    .alert-row.align-right {
+      justify-content: flex-end;
+    }
+
+    .alert-row.align-center {
+      justify-content: center;
+    }
+
+    /* Main Alert Card */
+
+    .alert {
+      width: 100%;
+      min-width: 0;
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: var(--shadow);
+      background: var(--card);
+      position: relative;
+      min-height: 58px;
+      transition: background 0.3s, opacity 0.3s, transform 0.3s;
+    }
+
+    /* Alert Icon */
+
+    .alert-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .alert-icon svg {
+      width: 19px;
+      height: 19px;
+    }
+
+    /* Alert Message */
+
+    .alert-message {
+      flex: 1;
+      min-width: 0;
+      font-size: 0.95rem;
+      line-height: 1.4;
+      color: var(--text);
+      overflow-wrap: break-word;
+    }
+
+    /* Close Button */
+
+    .alert-close {
+      width: 26px;
+      height: 26px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      transition: color 0.2s;
+      flex-shrink: 0;
+    }
+
+    .alert-close:hover {
+      color: var(--text);
+    }
+
+    .alert-close svg {
+      width: 19px;
+      height: 19px;
+    }
+
+    /* Success */
+
+    .alert-success .alert-icon {
+      background: rgba(34, 160, 107, 0.15);
+      color: #22a06b;
+    }
+
+    /* Error */
+
+    .alert-error .alert-icon {
+      background: rgba(229, 72, 77, 0.15);
+      color: #e5484d;
+    }
+
+    /* Warning */
+
+    .alert-warning .alert-icon {
+      background: rgba(255, 193, 7, 0.15);
+      color: #d9a600;
+    }
+
+    /* Info */
+
+    .alert-info .alert-icon {
+      background: rgba(79, 107, 237, 0.15);
+      color: var(--accent);
+    }
+
+    /* Animations */
+
+    .alert-left-slide {
+      animation: slideFromLeft 0.6s ease-out;
+    }
+
+    .alert-right-slide {
+      animation: slideFromRight 0.6s ease-out;
+    }
+
+    .alert-center-slide {
+      animation: slideFromLeft 0.6s ease-out;
+    }
+
+    @keyframes slideFromLeft {
+      from {
+        opacity: 0;
+        transform: translateX(-100px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes slideFromRight {
+      from {
+        opacity: 0;
+        transform: translateX(100px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    /* Mobile Responsive */
+
+    @media (max-width: 480px) {
+      .alerts-container {
+        width: 90%;
+        gap: 16px;
+      }
+
+      .alert {
+        padding: 9px 12px;
+        gap: 10px;
+        border-radius: 10px;
+      }
+
+      .alert-icon {
+        width: 32px;
+        height: 32px;
+      }
+
+      .alert-icon svg {
+        width: 18px;
+        height: 18px;
+      }
+
+      .alert-message {
+        font-size: 0.92rem;
+        line-height: 1.4;
+      }
+
+      .alert-close {
+        width: 24px;
+        height: 24px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Theme Toggle -->
+
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+
+    <svg class="icon-moon" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2"
+      stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>
+    </svg>
+
+    <svg class="icon-sun" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2"
+      stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="4"/>
+      <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+    </svg>
+
+  </button>
+
+  <!-- Alerts -->
+
+  <div class="alerts-container">
+
+    <!-- Success -->
+
+    <div class="alert-row align-left">
+
+      <div class="alert alert-success alert-left-slide">
+
+        <div class="alert-icon">
+          <svg viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+            <path d="m9 11 3 3L22 4"/>
+          </svg>
+        </div>
+
+        <div class="alert-message">
+          Aapka action successfully complete ho gaya.
+        </div>
+
+        <button class="alert-close" aria-label="Close alert">
+          <svg viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 6l12 12M18 6L6 18"/>
+          </svg>
+        </button>
+
+      </div>
+    </div>
+
+    <!-- Error -->
+
+    <div class="alert-row align-right">
+
+      <div class="alert alert-error alert-right-slide">
+
+        <div class="alert-icon">
+          <svg viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 8v4M12 16h.01"/>
+          </svg>
+        </div>
+
+        <div class="alert-message">
+          Kuch galat ho gaya, dobara koshish karein.
+        </div>
+
+        <button class="alert-close" aria-label="Close alert">
+          <svg viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 6l12 12M18 6L6 18"/>
+          </svg>
+        </button>
+
+      </div>
+    </div>
+
+    <!-- Warning -->
+
+    <div class="alert-row align-center">
+
+      <div class="alert alert-warning alert-center-slide"
+        style="animation-delay: 0.2s;">
+
+        <div class="alert-icon">
+          <svg viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2L2 20h20L12 2z"/>
+            <path d="M12 9v4M12 17h.01"/>
+          </svg>
+        </div>
+
+        <div class="alert-message">
+          Ye action reverse nahi ho sakta.
+        </div>
+
+        <button class="alert-close" aria-label="Close alert">
+          <svg viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 6l12 12M18 6L6 18"/>
+          </svg>
+        </button>
+
+      </div>
+    </div>
+
+    <!-- Info -->
+
+    <div class="alert-row align-left">
+
+      <div class="alert alert-info alert-left-slide"
+        style="animation-delay: 0.4s;">
+
+        <div class="alert-icon">
+          <svg viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2.5"
+            stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 16v-4M12 8h.01"/>
+          </svg>
+        </div>
+
+        <div class="alert-message">
+          Ye ek information message hai.
+        </div>
+
+        <button class="alert-close" aria-label="Close alert">
+          <svg viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 6l12 12M18 6L6 18"/>
+          </svg>
+        </button>
+
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const root = document.documentElement;
+    const toggle = document.getElementById("themeToggle");
+
+    // Theme Management
+
+    function setTheme(theme) {
+      root.setAttribute("data-theme", theme);
+
+      try {
+        localStorage.setItem("theme", theme);
+      } catch (e) {}
+    }
+
+    let saved = null;
+
+    try {
+      saved = localStorage.getItem("theme");
+    } catch (e) {}
+
+    setTheme(
+      saved ||
+      (window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light")
+    );
+
+    toggle.addEventListener("click", () => {
+      setTheme(
+        root.getAttribute("data-theme") === "dark"
+          ? "light"
+          : "dark"
+      );
+    });
+
+    // Close Alerts
+
+    document.querySelectorAll(".alert-close").forEach(btn => {
+
+      btn.addEventListener("click", () => {
+
+        const alert = btn.closest(".alert");
+        const row = alert.closest(".alert-row");
+
+        alert.style.opacity = "0";
+        alert.style.transform = "translateY(-10px)";
+
+        setTimeout(() => {
+          row.style.display = "none";
+        }, 300);
+
+      });
+
+    });
+  </script>
+
+</body>
+</html>
