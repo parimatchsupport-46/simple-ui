@@ -113,7 +113,149 @@
       color: var(--muted);
       font-size: 0.9rem;
     }
-  </style>
+  
+    /* ==========================================================================
+       ADDED THEMES  (new colour schemes - Green / Blue / Sky Blue /
+       Dark + White / White + Dark).  Every scheme supports BOTH light and
+       dark mode.  Nothing above this line has been changed or removed:
+       the original :root (light) and [data-theme="dark"] rules are intact.
+
+       data-theme  = mode   ("light" | "dark")   <- unchanged, existing
+       data-scheme = colour (green|blue|sky|darkwhite|whitedark)  <- new
+       ========================================================================== */
+
+    /* --- Green theme : LIGHT mode --- */
+    html[data-scheme="green"] {
+      --bg:#f0f7f2; --card:#ffffff; --text:#14251b; --muted:#5b7264; --border:#d7e8dd; --shadow:0 8px 30px rgba(20,74,42,.10); --accent:#1f9d55;
+    }
+
+    /* --- Green theme : DARK mode --- */
+    html[data-theme="dark"][data-scheme="green"] {
+      --bg:#0d1511; --card:#15211a; --text:#e7f3ec; --muted:#93a99b; --border:#23362b; --shadow:0 8px 30px rgba(0,0,0,.45); --accent:#4ade80;
+    }
+
+    /* --- Blue theme : LIGHT mode --- */
+    html[data-scheme="blue"] {
+      --bg:#f0f4fb; --card:#ffffff; --text:#131c2e; --muted:#5b6a83; --border:#d9e2f0; --shadow:0 8px 30px rgba(20,50,110,.10); --accent:#2563eb;
+    }
+
+    /* --- Blue theme : DARK mode --- */
+    html[data-theme="dark"][data-scheme="blue"] {
+      --bg:#0b1120; --card:#131c2e; --text:#e7edf9; --muted:#92a0ba; --border:#22304c; --shadow:0 8px 30px rgba(0,0,0,.45); --accent:#60a5fa;
+    }
+
+    /* --- Sky Blue theme : LIGHT mode --- */
+    html[data-scheme="sky"] {
+      --bg:#eef7fc; --card:#ffffff; --text:#10242e; --muted:#587585; --border:#d4e9f4; --shadow:0 8px 30px rgba(14,90,130,.10); --accent:#0ea5e9;
+    }
+
+    /* --- Sky Blue theme : DARK mode --- */
+    html[data-theme="dark"][data-scheme="sky"] {
+      --bg:#09141b; --card:#10202a; --text:#e4f2f9; --muted:#8ea9b8; --border:#1d3543; --shadow:0 8px 30px rgba(0,0,0,.45); --accent:#38bdf8;
+    }
+
+    /* --- Dark + White theme : LIGHT mode --- */
+    html[data-scheme="darkwhite"] {
+      --bg:#f5f5f5; --card:#ffffff; --text:#0a0a0a; --muted:#4f4f4f; --border:#1a1a1a; --shadow:0 8px 30px rgba(0,0,0,.18); --accent:#0a0a0a;
+    }
+
+    /* --- Dark + White theme : DARK mode --- */
+    html[data-theme="dark"][data-scheme="darkwhite"] {
+      --bg:#0a0a0a; --card:#151515; --text:#ffffff; --muted:#a6a6a6; --border:#e8e8e8; --shadow:0 8px 30px rgba(0,0,0,.60); --accent:#ffffff;
+    }
+
+    /* --- White + Dark theme : LIGHT mode --- */
+    html[data-scheme="whitedark"] {
+      --bg:#f8fafc; --card:#ffffff; --text:#1e293b; --muted:#64748b; --border:#e2e8f0; --shadow:0 8px 24px rgba(30,41,59,.10); --accent:#334155;
+    }
+
+    /* --- White + Dark theme : DARK mode --- */
+    html[data-theme="dark"][data-scheme="whitedark"] {
+      --bg:#1e293b; --card:#2a3850; --text:#f8fafc; --muted:#a8b5c8; --border:#3e4f6b; --shadow:0 8px 30px rgba(0,0,0,.45); --accent:#f1f5f9;
+    }
+
+    /* ---------- Added: theme picker widget (new UI, bottom-left) ---------- */
+    .st-dock {
+      position: fixed;
+      left: 16px;
+      bottom: 16px;
+      z-index: 6;
+      font-family: inherit;
+    }
+    .st-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      transition: transform 0.2s, background 0.3s, border-color 0.3s;
+    }
+    .st-btn:hover { transform: scale(1.08); }
+    .st-btn svg { width: 20px; height: 20px; }
+    .st-panel {
+      position: absolute;
+      bottom: 52px;
+      left: 0;
+      width: 200px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      box-shadow: var(--shadow);
+      padding: 12px;
+      display: none;
+    }
+    .st-dock.open .st-panel { display: block; }
+    .st-title {
+      margin: 0 0 8px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .st-list { display: flex; flex-direction: column; gap: 3px; }
+    .st-opt {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      width: 100%;
+      padding: 7px 8px;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.85rem;
+      text-align: left;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .st-opt:hover { background: var(--bg); }
+    .st-opt[aria-checked="true"] {
+      border-color: var(--accent);
+      background: var(--bg);
+      font-weight: 600;
+    }
+    .st-sw {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      flex: none;
+    }
+    .st-hint {
+      margin: 9px 0 0;
+      font-size: 0.68rem;
+      line-height: 1.45;
+      color: var(--muted);
+    }
+</style>
 </head>
 <body>
 
@@ -146,7 +288,32 @@
     <div id="result"></div>
   </div>
 
-  <script>
+  
+  <!-- ===== Added: colour theme picker (new themes). Existing markup unchanged. ===== -->
+  <div class="st-dock" id="stDock">
+    <div class="st-panel" id="stPanel" role="radiogroup" aria-label="Colour theme">
+      <p class="st-title">Theme</p>
+      <div class="st-list">
+        <button type="button" class="st-opt" role="radio" aria-checked="true" data-st-scheme=""><span class="st-sw" style="background:#4f6bed"></span>Default</button>
+        <button type="button" class="st-opt" role="radio" aria-checked="false" data-st-scheme="green"><span class="st-sw" style="background:#1f9d55"></span>Green</button>
+        <button type="button" class="st-opt" role="radio" aria-checked="false" data-st-scheme="blue"><span class="st-sw" style="background:#2563eb"></span>Blue</button>
+        <button type="button" class="st-opt" role="radio" aria-checked="false" data-st-scheme="sky"><span class="st-sw" style="background:#0ea5e9"></span>Sky Blue</button>
+        <button type="button" class="st-opt" role="radio" aria-checked="false" data-st-scheme="darkwhite"><span class="st-sw" style="background:linear-gradient(135deg,#0a0a0a 50%,#ffffff 50%)"></span>Dark + White</button>
+        <button type="button" class="st-opt" role="radio" aria-checked="false" data-st-scheme="whitedark"><span class="st-sw" style="background:linear-gradient(135deg,#ffffff 50%,#334155 50%)"></span>White + Dark</button>
+      </div>
+      <p class="st-hint">Every theme has Light + Dark mode &mdash; switch it with the moon / sun button at the top right.</p>
+    </div>
+    <button type="button" class="st-btn" id="stBtn" aria-label="Choose colour theme" aria-haspopup="true" aria-expanded="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.93 0 1.65-.75 1.65-1.69 0-.44-.18-.83-.44-1.12-.29-.29-.44-.65-.44-1.13 0-.92.75-1.66 1.67-1.66h1.99c3.05 0 5.56-2.5 5.56-5.56C21.96 6.01 17.46 2 12 2z"/>
+        <circle cx="13.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/>
+        <circle cx="17.5" cy="10.5" r="1.2" fill="currentColor" stroke="none"/>
+        <circle cx="8.5" cy="7.5" r="1.2" fill="currentColor" stroke="none"/>
+        <circle cx="6.5" cy="12.5" r="1.2" fill="currentColor" stroke="none"/>
+      </svg>
+    </button>
+  </div>
+<script>
     const root = document.documentElement;
     const toggle = document.getElementById("themeToggle");
 
@@ -166,6 +333,68 @@
     const result = document.getElementById("result");
     document.getElementById("yesBtn").addEventListener("click", () => result.textContent = "You clicked Yes ✅");
     document.getElementById("noBtn").addEventListener("click", () => result.textContent = "You clicked No ❌");
-  </script>
+  
+    /* ===== Added: colour theme picker logic. The existing light/dark theme
+       code above is untouched and keeps working exactly as before. ===== */
+    (function () {
+      var stRoot   = document.documentElement;
+      var SCHEMES  = ["", "green", "blue", "sky", "darkwhite", "whitedark"];
+      var KEY      = "scheme";
+      var dock     = document.getElementById("stDock");
+      var stBtn    = document.getElementById("stBtn");
+      var options  = Array.prototype.slice.call(dock.querySelectorAll("[data-st-scheme]"));
+
+      function stCurrent() { return stRoot.getAttribute("data-scheme") || ""; }
+
+      function stMark(value) {
+        options.forEach(function (o) {
+          o.setAttribute("aria-checked", String(o.getAttribute("data-st-scheme") === value));
+        });
+      }
+
+      function setScheme(scheme) {
+        if (scheme) { stRoot.setAttribute("data-scheme", scheme); }
+        else { stRoot.removeAttribute("data-scheme"); }
+        try {
+          if (scheme) { localStorage.setItem(KEY, scheme); }
+          else { localStorage.removeItem(KEY); }
+        } catch (e) {}
+        stMark(scheme);
+      }
+
+      options.forEach(function (o) {
+        o.addEventListener("click", function () {
+          setScheme(o.getAttribute("data-st-scheme"));
+        });
+      });
+
+      function stClose() {
+        dock.classList.remove("open");
+        stBtn.setAttribute("aria-expanded", "false");
+      }
+
+      stBtn.addEventListener("click", function (e) {
+        e.stopPropagation();
+        var open = dock.classList.toggle("open");
+        stBtn.setAttribute("aria-expanded", String(open));
+      });
+
+      document.addEventListener("click", function (e) {
+        if (!dock.contains(e.target)) { stClose(); }
+      });
+
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape" && dock.classList.contains("open")) {
+          stClose();
+          stBtn.focus();
+        }
+      });
+
+      var stSaved = null;
+      try { stSaved = localStorage.getItem(KEY); } catch (e) {}
+      if (stSaved && SCHEMES.indexOf(stSaved) !== -1) { setScheme(stSaved); }
+      else { stMark(stCurrent()); }
+    })();
+</script>
 </body>
 </html>
