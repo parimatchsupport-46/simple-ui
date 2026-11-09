@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simple UI — Component Gallery</title>
+  <style>
+    /* ============================================================
+       Design tokens - identical to the rest of the library so this
+       page re-themes exactly like every component page does.
+       ============================================================ */
+    :root {
+      --bg: #f4f5f7;
+      --card: #ffffff;
+      --text: #1f2430;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+      --accent: #4f6bed;
+    }
+
+    [data-theme="dark"] {
+      --bg: #12141a;
+      --card: #1c1f28;
+      --text: #eceef3;
+      --muted: #9aa1b2;
+      --border: #2a2e3a;
+      --shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+      --accent: #7b92ff;
+    }
+
+    /* --- Green theme : LIGHT mode --- */
+    html[data-scheme="green"] {
+      --bg:#f0f7f2; --card:#ffffff; --text:#14251b; --muted:#5b7264; --border:#d7e8dd; --shadow:0 8px 30px rgba(20,74,42,.10); --accent:#1f9d55;
+    }
+    /* --- Green theme : DARK mode --- */
+    html[data-theme="dark"][data-scheme="green"] {
+      --bg:#0d1511; --card:#15211a; --text:#e7f3ec; --muted:#93a99b; --border:#23362b; --shadow:0 8px 30px rgba(0,0,0,.45); --accent:#4ade80;
+    }
+    /* --- Blue theme : LIGHT mode --- */
+    html[data-scheme="blue"] {
+      --bg:#f0f4fb; --card:#ffffff; --text:#131c2e; --muted:#5b6a83; --border:#d9e2f0; --shadow:0 8px 30px rgba(20,50,110,.10); --accent:#2563eb;
+    }
+    /* --- Blue theme : DARK mode --- */
+    html[data-theme="dark"][data-scheme="blue"] {
+      --bg:#0b1120; --card:#131c2e; --text:#e7edf9; --muted:#92a0ba; --border:#22304c; --shadow:0 8px 30px rgba(0,0,0,.45); --accent:#60a5fa;
+    }
+    /* --- Sky Blue theme : LIGHT mode --- */
+    html[data-scheme="sky"] {
+      --bg:#eef7fc; --card:#ffffff; --text:#10242e; --muted:#587585; --border:#d4e9f4; --shadow:0 8px 30px rgba(14,90,130,.10); --accent:#0ea5e9;
+    }
+    /* --- Sky Blue theme : DARK mode --- */
+    html[data-theme="dark"][data-scheme="sky"] {
+      --bg:#09141b; --card:#10202a; --text:#e4f2f9; --muted:#8ea9b8; --border:#1d3543; --shadow:0 8px 30px rgba(0,0,0,.45); --accent:#38bdf8;
+    }
+    /* --- Dark + White theme : LIGHT mode --- */
+    html[data-scheme="darkwhite"] {
+      --bg:#f5f5f5; --card:#ffffff; --text:#0a0a0a; --muted:#4f4f4f; --border:#1a1a1a; --shadow:0 8px 30px rgba(0,0,0,.18); --accent:#0a0a0a;
+    }
+    /* --- Dark + White theme : DARK mode --- */
+    html[data-theme="dark"][data-scheme="darkwhite"] {
+      --bg:#0a0a0a; --card:#151515; --text:#ffffff; --muted:#a6a6a6; --border:#e8e8e8; --shadow:0 8px 30px rgba(0,0,0,.60); --accent:#ffffff;
+    }
+    /* --- White + Dark theme : LIGHT mode --- */
+    html[data-scheme="whitedark"] {
+      --bg:#f8fafc; --card:#ffffff; --text:#1e293b; --muted:#64748b; --border:#e2e8f0; --shadow:0 8px 24px rgba(30,41,59,.10); --accent:#334155;
+    }
+    /* --- White + Dark theme : DARK mode --- */
+    html[data-theme="dark"][data-scheme="whitedark"] {
+      --bg:#1e293b; --card:#2a3850; --text:#f8fafc; --muted:#a8b5c8; --border:#3e4f6b; --shadow:0 8px 30px rgba(0,0,0,.45); --accent:#f1f5f9;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    /* ---------- Top bar ---------- */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      transition: background 0.3s, border-color 0.3s;
+    }
+    .topbar-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand-mark {
+      width: 32px; height: 32px;
+      border-radius: 6px;
+      background: var(--accent);
+      color: var(--card);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 0.78rem;
+      flex: none;
+      transition: background 0.3s;
+    }
+    .brand-name { font-weight: 700; font-size: 1rem; line-height: 1.2; }
+    .brand-sub { font-size: 0.72rem; color: var(--muted); font-weight: 500; }
+
+    .controls { display: flex; align-items: center; gap: 14px; margin-left: auto; flex-wrap: wrap; }
+
+    .swatches { display: flex; align-items: center; gap: 7px; }
+    .swatches-label {
+      font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--muted); font-weight: 700; margin-right: 2px;
+    }
+    .sw {
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      cursor: pointer;
+      padding: 0;
+      flex: none;
+      transition: transform 0.15s, border-color 0.15s;
+    }
+    .sw:hover { transform: scale(1.14); }
+    .sw[aria-pressed="true"] {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--card), 0 0 0 4px var(--accent);
+    }
+
+    .mode-toggle {
+      display: flex;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+      background: var(--bg);
+    }
+    .mode-toggle button {
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      padding: 7px 13px;
+      font: inherit;
+      font-size: 0.82rem;
+      cursor: pointer;
+      display: flex; align-items: center; gap: 6px;
+      transition: background 0.2s, color 0.2s;
+    }
+    .mode-toggle button svg { width: 15px; height: 15px; }
+    .mode-toggle button[aria-pressed="true"] {
+      background: var(--accent);
+      color: var(--card);
+      font-weight: 600;
+    }
+
+    /* ---------- Layout ---------- */
+    .layout {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+      display: grid;
+      grid-template-columns: 216px minmax(0, 1fr);
+      gap: 20px;
+      align-items: start;
+    }
+
+    .side {
+      position: sticky;
+      top: 82px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      box-shadow: var(--shadow);
+      padding: 12px;
+      max-height: calc(100vh - 104px);
+      overflow: auto;
+      transition: background 0.3s, border-color 0.3s;
+    }
+    .side h2 {
+      font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--muted); font-weight: 700; margin-bottom: 7px;
+    }
+    .side a {
+      display: flex; align-items: center; gap: 8px;
+      padding: 6px 9px;
+      border-radius: 6px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.84rem;
+      transition: background 0.15s, color 0.15s;
+    }
+    .side a:hover { background: var(--bg); color: var(--text); }
+    .side a.active { background: var(--bg); color: var(--accent); font-weight: 600; }
+    .side a .n {
+      font-size: 0.66rem; color: var(--muted);
+      font-variant-numeric: tabular-nums; min-width: 16px;
+    }
+    .side a.active .n { color: var(--accent); }
+
+    .side-opt {
+      margin-top: 14px; padding-top: 12px;
+      border-top: 1px solid var(--border);
+      display: flex; align-items: flex-start; gap: 8px;
+      font-size: 0.76rem; color: var(--muted); line-height: 1.4;
+      cursor: pointer;
+    }
+    .side-opt input { margin-top: 2px; accent-color: var(--accent); cursor: pointer; }
+
+    /* ---------- Component cards ---------- */
+    .cards { display: flex; flex-direction: column; gap: 20px; }
+
+    .frame-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      scroll-margin-top: 88px;
+      transition: background 0.3s, border-color 0.3s;
+    }
+    .frame-head {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+      transition: background 0.3s, border-color 0.3s;
+    }
+    .frame-head h3 { font-size: 0.9rem; font-weight: 600; }
+    .frame-head .n {
+      font-size: 0.68rem; color: var(--muted);
+      font-variant-numeric: tabular-nums;
+    }
+    .frame-head .path {
+      font-size: 0.7rem; color: var(--muted);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      max-width: 34ch;
+    }
+    .frame-head .open {
+      margin-left: auto;
+      flex: none;
+      font-size: 0.75rem;
+      color: var(--accent);
+      text-decoration: none;
+      border: 1px solid var(--border);
+      background: var(--card);
+      padding: 4px 10px;
+      border-radius: 6px;
+      transition: border-color 0.2s, background 0.3s;
+    }
+    .frame-head .open:hover { border-color: var(--accent); }
+
+    iframe {
+      display: block;
+      width: 100%;
+      border: 0;
+      background: var(--card);
+      height: 420px;
+    }
+
+    .gal-footer {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 20px 32px;
+      font-size: 0.76rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .gal-footer code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1px 5px;
+      font-size: 0.72rem;
+    }
+
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: minmax(0, 1fr); }
+      .side { position: static; max-height: none; }
+      .controls { margin-left: 0; width: 100%; }
+      .frame-head .path { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <span class="brand-mark">UI</span>
+        <span>
+          <span class="brand-name">Simple UI</span>
+          <span class="brand-sub">Component gallery &mdash; 15 components &times; 6 themes &times; light/dark</span>
+        </span>
+      </div>
+
+      <div class="controls">
+        <div class="swatches" id="swatches" role="group" aria-label="Colour theme">
+          <span class="swatches-label">Theme</span>
+        </div>
+
+        <div class="mode-toggle" role="group" aria-label="Light or dark mode">
+          <button type="button" id="modeLight" aria-pressed="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="4"/>
+              <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+            </svg>
+            Light
+          </button>
+          <button type="button" id="modeDark" aria-pressed="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>
+            </svg>
+            Dark
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="side">
+      <h2>Components</h2>
+      <nav id="nav"></nav>
+
+      <label class="side-opt">
+        <input type="checkbox" id="showControls" />
+        <span>Show each page&rsquo;s own theme controls inside the previews</span>
+      </label>
+    </aside>
+
+    <main class="cards" id="cards"></main>
+  </div>
+
+  <footer class="gal-footer">
+    Every preview below is the real component page loaded in an iframe &mdash; nothing is
+    restyled or duplicated here, so what you see is exactly what each file renders on its own.
+    Theme and mode are stored in <code>localStorage</code> as <code>scheme</code> and
+    <code>theme</code>, the same keys the component pages use, so your choice carries over
+    when you open a component full-page.
+  </footer>
+
+  <script>
+    /* ---------- component registry ---------- */
+    var COMPONENTS = [
+      { label: "Badges",            src: "All%20components/Badges/badges.html" },
+      { label: "Cards & Buttons",   src: "All%20components/Cards%20and%20button/index.html" },
+      { label: "File Uploader",     src: "All%20components/FileUploader/file-uploader.html" },
+      { label: "Footer",            src: "All%20components/Footer/footer.html" },
+      { label: "Hamburger",         src: "All%20components/Hamburger/hamburger.html" },
+      { label: "Loaders",           src: "All%20components/Loaders/loaders.html" },
+      { label: "Modals",            src: "All%20components/Modlas/modals.html" },
+      { label: "Navbar",            src: "All%20components/Nevbar/nevbar.html" },
+      { label: "Search Bar",        src: "All%20components/Search%20Bar/searchbar.html" },
+      { label: "Tables",            src: "All%20components/Table%27s%20/tables.html" },
+      { label: "Alerts",            src: "All%20components/Toast.html/ToastNotifications.html" },
+      { label: "Toast",             src: "All%20components/Toast.html/tpast2.html" },
+      { label: "Tooltips",          src: "All%20components/Toll-tips/tooltips.html" },
+      { label: "Stepper",           src: "All%20components/stepper/stepper.html" },
+      { label: "Toggle Switch",     src: "All%20components/toggle-swich/toggle-switch.html" }
+    ];
+
+    /* ---------- themes ---------- */
+    var SCHEMES = [
+      { key: "",          label: "Default",      swatch: "#4f6bed" },
+      { key: "green",     label: "Green",        swatch: "#1f9d55" },
+      { key: "blue",      label: "Blue",         swatch: "#2563eb" },
+      { key: "sky",       label: "Sky Blue",     swatch: "#0ea5e9" },
+      { key: "darkwhite", label: "Dark + White", swatch: "linear-gradient(135deg,#0a0a0a 50%,#ffffff 50%)" },
+      { key: "whitedark", label: "White + Dark", swatch: "linear-gradient(135deg,#ffffff 50%,#334155 50%)" }
+    ];
+
+    var root = document.documentElement;
+    var state = { scheme: "", mode: "light" };
+
+    /* restore persisted choice (same keys the component pages use) */
+    try {
+      var s = localStorage.getItem("scheme");
+      if (s && SCHEMES.some(function (x) { return x.key === s; })) state.scheme = s;
+      state.mode = localStorage.getItem("theme") === "dark" ? "dark" : "light";
+    } catch (e) {}
+
+    /* ---------- build theme swatches ---------- */
+    var swatches = document.getElementById("swatches");
+    SCHEMES.forEach(function (t) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "sw";
+      b.title = t.label + " theme";
+      b.setAttribute("aria-label", t.label + " theme");
+      b.setAttribute("aria-pressed", String(t.key === state.scheme));
+      b.dataset.scheme = t.key;
+      b.style.background = t.swatch;
+      b.addEventListener("click", function () { setScheme(t.key); });
+      swatches.appendChild(b);
+    });
+
+    /* ---------- build sidebar nav + preview cards ---------- */
+    var nav = document.getElementById("nav");
+    var cards = document.getElementById("cards");
+    var frames = [];
+
+    COMPONENTS.forEach(function (c, i) {
+      var id = "c" + i;
+
+      var a = document.createElement("a");
+      a.href = "#" + id;
+      a.dataset.target = id;
+      a.innerHTML = '<span class="n">' + String(i + 1).padStart(2, "0") + "</span><span>" + c.label + "</span>";
+      nav.appendChild(a);
+
+      var card = document.createElement("section");
+      card.className = "frame-card";
+      card.id = id;
+
+      var head = document.createElement("div");
+      head.className = "frame-head";
+      head.innerHTML =
+        '<span class="n">' + String(i + 1).padStart(2, "0") + "</span>" +
+        "<h3>" + c.label + "</h3>" +
+        '<span class="path">' + decodeURIComponent(c.src) + "</span>" +
+        '<a class="open" href="' + c.src + '" target="_blank" rel="noopener">Open full page &rarr;</a>';
+
+      var f = document.createElement("iframe");
+      f.src = c.src;
+      f.title = c.label + " component preview";
+      f.loading = "lazy";
+      f.addEventListener("load", function () { syncFrame(f); });
+
+      card.appendChild(head);
+      card.appendChild(f);
+      cards.appendChild(card);
+      frames.push(f);
+    });
+
+    /* ---------- apply theme to this page + every preview ---------- */
+    function applySelf() {
+      root.setAttribute("data-theme", state.mode);
+      if (state.scheme) root.setAttribute("data-scheme", state.scheme);
+      else root.removeAttribute("data-scheme");
+
+      document.querySelectorAll(".sw").forEach(function (b) {
+        b.setAttribute("aria-pressed", String(b.dataset.scheme === state.scheme));
+      });
+      document.getElementById("modeLight").setAttribute("aria-pressed", String(state.mode === "light"));
+      document.getElementById("modeDark").setAttribute("aria-pressed", String(state.mode === "dark"));
+    }
+
+    function syncFrame(f) {
+      var doc;
+      try { doc = f.contentDocument; } catch (e) { return; }
+      if (!doc || !doc.documentElement) return;
+
+      var el = doc.documentElement;
+      el.setAttribute("data-theme", state.mode);
+      if (state.scheme) el.setAttribute("data-scheme", state.scheme);
+      else el.removeAttribute("data-scheme");
+
+      /* runtime-only tweaks for the gallery view; the source files are never modified */
+      var inject = doc.getElementById("galInject");
+      if (!inject) {
+        inject = doc.createElement("style");
+        inject.id = "galInject";
+        (doc.head || el).appendChild(inject);
+      }
+      inject.textContent =
+        "html,body{min-height:0 !important;height:auto !important;}" +
+        (document.getElementById("showControls").checked
+          ? ""
+          : ".theme-toggle,.st-dock{display:none !important;}");
+
+      measure(f);
+    }
+
+    function measure(f) {
+      var doc;
+      try { doc = f.contentDocument; } catch (e) { return; }
+      if (!doc || !doc.body) return;
+      var h = Math.max(
+        doc.body.scrollHeight, doc.documentElement.scrollHeight,
+        doc.body.offsetHeight, doc.documentElement.offsetHeight
+      );
+      f.style.height = Math.min(Math.max(h + 4, 180), 900) + "px";
+    }
+
+    function syncAll() {
+      applySelf();
+      try {
+        localStorage.setItem("theme", state.mode);
+        if (state.scheme) localStorage.setItem("scheme", state.scheme);
+        else localStorage.removeItem("scheme");
+      } catch (e) {}
+      frames.forEach(syncFrame);
+    }
+
+    function setScheme(key) { state.scheme = key; syncAll(); }
+    function setMode(mode)   { state.mode = mode;   syncAll(); }
+
+    document.getElementById("modeLight").addEventListener("click", function () { setMode("light"); });
+    document.getElementById("modeDark").addEventListener("click", function () { setMode("dark"); });
+    document.getElementById("showControls").addEventListener("change", function () { frames.forEach(syncFrame); });
+
+    /* ---------- keyboard shortcuts: T = toggle mode, 1-6 = pick theme ---------- */
+    document.addEventListener("keydown", function (e) {
+      if (e.target.closest("input, textarea")) return;
+      if (e.key === "t" || e.key === "T") { setMode(state.mode === "dark" ? "light" : "dark"); }
+      var n = parseInt(e.key, 10);
+      if (n >= 1 && n <= SCHEMES.length) setScheme(SCHEMES[n - 1].key);
+    });
+
+    /* ---------- keep sidebar highlight in sync while scrolling ---------- */
+    var navLinks = Array.prototype.slice.call(nav.querySelectorAll("a"));
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        navLinks.forEach(function (l) {
+          l.classList.toggle("active", l.dataset.target === en.target.id);
+        });
+      });
+    }, { rootMargin: "-88px 0px -70% 0px", threshold: 0 });
+    document.querySelectorAll(".frame-card").forEach(function (c) { observer.observe(c); });
+
+    navLinks.forEach(function (l) {
+      l.addEventListener("click", function (e) {
+        e.preventDefault();
+        var t = document.getElementById(l.dataset.target);
+        if (t) t.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    });
+
+    /* ---------- re-measure previews when the window is resized ---------- */
+    var rt;
+    window.addEventListener("resize", function () {
+      clearTimeout(rt);
+      rt = setTimeout(function () { frames.forEach(measure); }, 150);
+    });
+
+    /* ---------- initial paint ---------- */
+    syncAll();
+    /* iframes can finish loading before fonts settle, so re-measure once more */
+    window.addEventListener("load", function () {
+      setTimeout(function () { frames.forEach(function (f) { syncFrame(f); }); }, 250);
+    });
+  </script>
+</body>
+</html>
